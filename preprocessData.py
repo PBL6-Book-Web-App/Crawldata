@@ -7,6 +7,8 @@ from autocorrect import Speller
 import pandas as pd
 import datetime
 
+import nltk
+nltk.download('stopwords')
 
 lookup_dict = {
     'nlp': 'natural language processing',
