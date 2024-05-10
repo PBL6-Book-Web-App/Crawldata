@@ -11,7 +11,7 @@ def check_author_existed(author_name, cur):
 
 def check_book_existed(book_id, cur):
     query = "SELECT COUNT(*) FROM book WHERE id = %s"
-    cur.execute(query, (book_id,))
+    cur.execute(query, (str(book_id),))
     count = cur.fetchone()[0]
     return count > 0
 
@@ -27,18 +27,16 @@ def insert_authors(authors, conn, cur):
             print(f"Author '{author}' already exists in the database, skipping insertion.")
 
 def insert_book(row, conn, cur):
-    source_id = 'd42f914c-6fb9-43df-b938-b257516f41d7' # id for source from Thrift Books
+    source_id = 1 # id for source from Thrift Books
 
     print(f'book = { row.title } ### check_book_existed = {check_book_existed(row.id, cur)}' )
 
     if not check_book_existed(row['id'], cur):
-        # query = f'''INSERT INTO "book" ("id", "title", "description", "book_cover", "image_url", "release_date", "publisher", "number_of_pages", "price", "average_rating", "number_of_ratings", "number_of_reviews", "source_id")
-        #                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
-        query = f'''INSERT INTO "book" ("title", "description", "book_cover", "image_url", "release_date", "publisher", "number_of_pages", "price", "average_rating", "number_of_ratings", "number_of_reviews", "source_id")
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
-                        
+        query = f'''INSERT INTO "book" ("id", "title", "description", "book_cover", "image_url", "release_date", "publisher", "number_of_pages", "price", "average_rating", "number_of_ratings", "number_of_reviews", "source_id", "preprocessed_description")
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
+        
         cur.execute(query, (
-            # row['id'],
+            str(row['id']),
             row['title'],
             row['description'],
             row['book_cover'],
@@ -50,7 +48,8 @@ def insert_book(row, conn, cur):
             row['rating'],
             row['number_of_ratings'],
             row['number_of_reviews'],
-            source_id
+            source_id,
+            row['preprocessed_description'],
         ))
 
         return row
@@ -59,6 +58,7 @@ def insert_book(row, conn, cur):
 def insert_author_to_book(author_name, book_id, conn, cur):
     cur.execute("SELECT id FROM author WHERE name = %s", (author_name,))
     author_record = cur.fetchone()
+    book_id = str(book_id)
 
     if author_record:
         author_id = author_record[0]
@@ -75,7 +75,7 @@ def insert_author_to_book_from_dataframe(df, conn, cur):
     book_ids = [row[0] for row in cur.fetchall()]
 
     for index, row in df.iterrows():
-        book_id = book_ids[index]
+        book_id = str(book_ids[index])
         authors = str(row['authors'])
         authors = authors.split(',')
 
@@ -117,13 +117,13 @@ def execute(df):
             all_authors.update([author.strip() for author in authors_list if author.strip() != ''])
 
     try:
-        insert_authors(all_authors, conn, cur)
+        # insert_authors(all_authors, conn, cur)
 
         for _, row in df.iterrows():
             inserted_book = insert_book(row, conn, cur)
             books.append(inserted_book)
 
-        insert_author_to_book_from_dataframe(df, conn, cur)
+        # insert_author_to_book_from_dataframe(df, conn, cur)
 
         conn.commit()
     except Exception as e:

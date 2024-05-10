@@ -1,1 +1,1 @@
-pip install shedule pandas requests bs4 nltk textblob autocorrect psycopg2 python-dotenv
+pip install --user shedule pandas requests bs4 nltk textblob autocorrect psycopg2 python-dotenv
