@@ -107,13 +107,18 @@ def save_to_csv(books):
     current_date = datetime.datetime.now()
     columns = ['id', 'title', 'description', 'book_cover', 'image_url', 'release_date', 'publisher', 'number_of_pages', 'price', 'authors', 'rating', 'number_of_ratings', 'number_of_reviews']
     df = pd.DataFrame(data = books, columns = columns)
-    df.to_csv(f'../dataset/thrift-books/raw/thrift-books-{current_date}.csv', mode = 'a', header=False, index=False)
+    df.to_csv(f'dataset/thrift-books/raw/thrift-books-{current_date}.csv', mode = 'a', header=False, index=False)
+
+def getDateTime():
+    current_date = datetime.date.today().strftime("%Y-%m-%d")
+    return current_date
 
 def execute():
+    current_date = getDateTime()
     for i in range(200):
         page = i + 1
         print(f'==================Crawling Page {page}==================')
         books = getListBooksByPage(page)
         save_to_csv(books)
 
-    return f'../dataset/thrift-books/raw/thrift-books-{datetime.datetime.now()}.csv'
+    return f'dataset/thrift-books/raw/thrift-books-{current_date}.csv'

@@ -96,8 +96,8 @@ def preprocessing(text):
     text = standardize_text(text)
 
     # Spelling Correction
-    # spell = Speller()
-    # text = spell(text)
+    spell = Speller()
+    text = spell(text)
 
     # Lemmatization
     result = " ".join([Word(word).lemmatize() for word in text.split()])
@@ -107,14 +107,24 @@ def getDateTime():
     current_date = datetime.date.today().strftime("%Y-%m-%d")
     return current_date
 
-def executeByAttribute(rawFilePath, attribute = 'description'):
+def executeByAttribute(rawFilePath, attribute = 'description', sourceId=1):
     current_date = getDateTime()
     columns = ['id', 'title', 'description', 'book_cover', 'image_url', 'release_date', 'publisher', 'number_of_pages', 'price', 'authors', 'rating', 'number_of_ratings', 'number_of_reviews', "preprocessed_description"]
-    df = pd.read_csv(rawFilePath, names = columns)
-    print(df)
+    
+    if sourceId == 1: # thrift-books
+        df = pd.read_csv(rawFilePath, names = columns)
+    else:
+        df = pd.read_csv(rawFilePath)
+    
     new_attribute = f'preprocessed_{attribute}'
     df[new_attribute] = df[attribute].apply(preprocessing)
-    df.to_csv(f'dataset/thrift-books/preprocessed/thrift-books-{current_date}.csv', mode = 'a', header=False, index=False)
+
+    if sourceId == 1: # thrift-books
+        df.to_csv(f'dataset/thrift-books/preprocessed/thrift-books-{current_date}.csv', header=False, index=False)
+    if sourceId == 3: # goodreads
+        df.to_csv(f'dataset/goodreads/preprocessed/goodreads-{current_date}.csv', index=False)
+    if sourceId == 4: # bx-books
+        df.to_csv(f'dataset/book-crossing/preprocessed/book-crossing-{current_date}.csv', index=False)
+
     print('Done preprocessing')
-    print(df)
     return df
