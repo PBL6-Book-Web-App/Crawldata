@@ -34,7 +34,7 @@ def getData():
         return
 
     getThriftBooks()
-    getBookCrossingBooks()
+    # getBookCrossingBooks() # dont crawl this periodically
     getGoodReads()
     print("Task executed!")
 
@@ -47,4 +47,4 @@ def main():
         time.sleep(60)  # sleep for 60s before checking again
 
 if __name__ == "__main__":
-    getData()
+    main()
