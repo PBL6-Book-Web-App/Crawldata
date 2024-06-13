@@ -4,7 +4,7 @@ from crawlWeb import crawlThriftBooks
 from crawlWeb.crawlGoodReads import crawlGoodReads
 import preprocessData
 import pandas as pd
-from save import saveThriftBooks, saveBookCrossing, saveGoodReads
+from save import saveThriftBooks, saveGoodReads
 from datetime import date
 
 def getThriftBooks():
@@ -14,17 +14,16 @@ def getThriftBooks():
     inserted_books = saveThriftBooks.execute(df)
     return inserted_books
 
-def getBookCrossingBooks():
-    rawFilePath = r'dataset/book-crossing/raw/1st_book_crossing_data.csv'
-    df = preprocessData.executeByAttribute(rawFilePath=rawFilePath, attribute='description', sourceId = 4)
-    print(df)
+# def getBookCrossingBooks():
+#     rawFilePath = r'dataset/book-crossing/raw/1st_book_crossing_data.csv'
+#     df = preprocessData.executeByAttribute(rawFilePath=rawFilePath, attribute='description', sourceId = 4)
+#     print(df)
 
-    inserted_books = saveBookCrossing.execute(df)
-    return inserted_books
+#     inserted_books = saveBookCrossing.execute(df)
+#     return inserted_books
 
 def getGoodReads() :
     rawFilePath = crawlGoodReads.execute()
-    # rawFilePath = r'D:\Jasmine Data\SuplementarySpaceForOneDrive\PBL7-SRC\crawl-data\goodreads-2024-06-11.csv'
     df = preprocessData.executeByAttribute(rawFilePath=rawFilePath, attribute='description', sourceId = 3)
     print(df)
     saveGoodReads.execute(df)
