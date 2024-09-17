@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.csv filter=lfs diff=lfs merge=lfs -text
-dataset/
+# dataset/
 # C extensions
 *.so
 
