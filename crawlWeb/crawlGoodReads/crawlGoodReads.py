@@ -6,6 +6,7 @@ from crawlWeb.crawlGoodReads import crawlGoodReadsURL
 import pandas as pd
 import datetime
 
+
 def get_books_data(books_url):
     # Tạo danh sách books
     books_info = []
@@ -69,12 +70,13 @@ def get_books_data(books_url):
                     )
     return books_info
 
+
 def getDateTime():
     current_date = datetime.date.today().strftime("%Y-%m-%d")
     return current_date
 
+
 def execute():
-    current_date = getDateTime()
     books_url = crawlGoodReadsURL.get_new_book_url()
     books_info = get_books_data(books_url)
 
